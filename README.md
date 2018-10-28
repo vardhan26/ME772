@@ -8,3 +8,7 @@ code repository for course project of mechatronics
 * 128x64 OLED screen
 * Arduino pro mini
 * Breadboard, wires, etc.
+
+## The circuit:
+
+![circuit design](maincircuit.png "circuit")
