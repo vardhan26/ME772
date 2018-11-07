@@ -157,7 +157,9 @@ char menu()
 //Print Bluetooth data to OLED screen.
 void bHCoLED_loop()
 {
-	curr_time = "0000 hrs"
+	curr_time = "0000 hrs";
+	from_str = "";
+	message_str = "";
 	//Recieve data from Bluetooth
     if (bthc05.available())
     {
@@ -173,7 +175,13 @@ void bHCoLED_loop()
 			oLed128x64.println("Time :");
 			oLed128x64.println(curr_time);
 			oLed128x64.setTextColor(White);
-			oLed128x64.println("\n NO NEW NOTIFICATIONS");
+			if (message_str.length() == 0)
+				oLed128x64.println("\n NO NEW NOTIFICATIONS");
+			else
+			oLed128x64.println("\n You have a new notification: \t");
+			oLed128x64.println(from_str);
+			oLed128x64.println(" sent you a message\n");
+			oLed128x64.println(message_str);
 			oLed128x64.display();
 		}		  	
   		else if(inputstr.startsWith("From")) {
@@ -183,18 +191,14 @@ void bHCoLED_loop()
     		from_str = inputstr.substring(1,int_indx-1);
     		message_str = inputstr.remove(1, indx+6);
     		oLed128x64.setTextSize(1);
-			oLed128x64.setTextColor(Green);
+			oLed128x64.setTextColor(White);
 			oLed128x64.setCursor(0, 0);
 			oLed128x64.clearDisplay();
-			oLed128x64.println("Time :");
-			oLed128x64.println(curr_time);
-			oLed128x64.setTextColor(White);
 			oLed128x64.println("\n You have a new notification: \t");
 			oLed128x64.println(from_str);
 			oLed128x64.println(" sent you a message\n");
 			oLed128x64.println(message_str);						
 			oLed128x64.display();
-    		
   		}
   		else{
   			oLed128x64.setTextSize(2);
