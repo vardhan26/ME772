@@ -2,6 +2,7 @@
 // Include Libraries
 #include "Arduino.h"
 #include "BTHC05.h"
+#include "pulse-sensor-arduino.h"
 #include "Wire.h"
 #include "SPI.h"
 #include "Adafruit_SSD1306.h"
@@ -11,6 +12,7 @@
 // Pin Definitions
 #define BTHC05_PIN_RXD	10
 #define BTHC05_PIN_TXD	3
+#define HEARTPULSE_PIN_SIG	A0
 #define OLED128X64_PIN_RST	5
 #define OLED128X64_PIN_DC	4
 #define OLED128X64_PIN_CS	2
@@ -20,6 +22,7 @@
 // Global variables and defines
 
 // object initialization
+PulseSensor heartpulse;
 #define SSD1306_LCDHEIGHT 64
 Adafruit_SSD1306 oLed128x64(OLED128X64_PIN_DC, OLED128X64_PIN_RST, OLED128X64_PIN_CS);
 BTHC05 bthc05(BTHC05_PIN_RXD,BTHC05_PIN_TXD);
@@ -46,6 +49,7 @@ void setup()
     //Pair and connect to 'HC-05', the default password for connection is '1234'.
     //You should see this message from your arduino on your android device
     bthc05.println("Bluetooth On....");
+    heartpulse.begin(HEARTPULSE_PIN_SIG);
     oLed128x64.begin(SSD1306_SWITCHCAPVCC);  // by default, we'll generate the high voltage from the 3.3v line internally! (neat!)
     oLed128x64.clearDisplay(); // Clear the buffer.
     oLed128x64.display();
@@ -74,6 +78,16 @@ void loop()
     bthc05.println("PUT YOUR SENSOR DATA HERE");
     }
     else if(menuOption == '2') {
+    // Heart Rate Pulse Sensor - Test Code
+    //Measure Heart Rate
+    int heartpulseBPM = heartpulse.BPM;
+    Serial.println(heartpulseBPM);
+    if (heartpulse.QS == true) {
+        Serial.println("PULSE");
+        heartpulse.QS = false;
+    }
+    }
+    else if(menuOption == '3') {
     // Monochrome 1.3 inch 128x64 OLED graphic display - Test Code
     oLed128x64.setTextSize(1);
     oLed128x64.setTextColor(WHITE);
@@ -109,7 +123,8 @@ char menu()
 
     Serial.println(F("\nWhich component would you like to test?"));
     Serial.println(F("(1) HC - 05 Bluetooth Serial Module"));
-    Serial.println(F("(2) Monochrome 1.3 inch 128x64 OLED graphic display"));
+    Serial.println(F("(2) Heart Rate Pulse Sensor"));
+    Serial.println(F("(3) Monochrome 1.3 inch 128x64 OLED graphic display"));
     Serial.println(F("(menu) send anything else or press on board reset button\n"));
     while (!Serial.available());
 
@@ -122,6 +137,8 @@ char menu()
             if(c == '1') 
     			Serial.println(F("Now Testing HC - 05 Bluetooth Serial Module"));
     		else if(c == '2') 
+    			Serial.println(F("Now Testing Heart Rate Pulse Sensor"));
+    		else if(c == '3') 
     			Serial.println(F("Now Testing Monochrome 1.3 inch 128x64 OLED graphic display"));
             else
             {
