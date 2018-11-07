@@ -60,8 +60,10 @@ void setup()
 // Main logic of your circuit. It defines the interaction between the components you selected. After setup, it runs over and over again, in an eternal loop.
 void loop() 
 {
-    
-    
+	bHCoLED_loop();//function of time and a new notification
+	sendHrt();//sends the heart rate to mobile phone
+    //I have dumped the following code. 
+ /*
     if(menuOption == '1') {
     // HC - 05 Bluetooth Serial Module - Test Code
     String bthc05Str = "";
@@ -111,6 +113,8 @@ void loop()
     {
         menuOption = menu();
     }
+ */
+ 	delay(1000);
     
 }
 
@@ -150,8 +154,69 @@ char menu()
         }
     }
 }
+//Print Bluetooth data to OLED screen.
+void bHCoLED_loop()
+{
+	curr_time = "0000 hrs"
+	//Recieve data from Bluetooth
+    if (bthc05.available())
+    {
+        //Read a complete line from bluetooth terminal
+        inputstr = bthc05.readStringUntil();
+        if (new_time.startsWith("Sync Time")) {
+    		new_time.remove(1, 10);
+    		curr_time = new_time;
+    		oLed128x64.setTextSize(1);
+			oLed128x64.setTextColor(Green);
+			oLed128x64.setCursor(0, 0);
+			oLed128x64.clearDisplay();
+			oLed128x64.println("Time :");
+			oLed128x64.println(curr_time);
+			oLed128x64.setTextColor(White);
+			oLed128x64.println("\n NO NEW NOTIFICATIONS");
+			oLed128x64.display();
+		}		  	
+  		else if(inputstr.startsWith("From")) {
+    		inputstr.remove(1, 4);
+    		val = "Message"
+    		int indx = inputstr.indexOf(val);
+    		from_str = inputstr.substring(1,int_indx-1);
+    		message_str = inputstr.remove(1, indx+6);
+    		oLed128x64.setTextSize(1);
+			oLed128x64.setTextColor(Green);
+			oLed128x64.setCursor(0, 0);
+			oLed128x64.clearDisplay();
+			oLed128x64.println("Time :");
+			oLed128x64.println(curr_time);
+			oLed128x64.setTextColor(White);
+			oLed128x64.println("\n You have a new notification: \t");
+			oLed128x64.println(from_str);
+			oLed128x64.println(" sent you a message\n");
+			oLed128x64.println(message_str);						
+			oLed128x64.display();
+    		
+  		}
+  		else{
+  			oLed128x64.setTextSize(2);
+			oLed128x64.setTextColor(Red);
+			oLed128x64.setCursor(0, 0);
+			oLed128x64.clearDisplay();
+			oLed128x64.println("THE DEVICE IS IN STAND-BY MODE");
+			oLed128x64.display();
+  		}
+  		
+    }
+    
+}
+//sense Heart rate.
+void sendHrt()
+{
+	//Measure Heart Rate
+    int heartpulseBPM = heartpulse.BPM;
+    bthc05.println(heartpulseBPM);
+}
 
-/*******************************************************
+/*1******************************************************
 
 *    Circuito.io is an automatic generator of schematics and code for off
 *    the shelf hardware combinations.
