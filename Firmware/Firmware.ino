@@ -157,17 +157,17 @@ char menu()
 //Print Bluetooth data to OLED screen.
 void bHCoLED_loop()
 {
-	curr_time = "0000 hrs";
-	from_str = "";
-	message_str = "";
+	String curr_time = "0000 hrs";
+	String from_str = "";
+	String message_str = "";
 	//Recieve data from Bluetooth
     if (bthc05.available())
     {
         //Read a complete line from bluetooth terminal
         inputstr = bthc05.readStringUntil();
-        if (new_time.startsWith("Sync Time")) {
-    		new_time.remove(1, 10);
-    		curr_time = new_time;
+        if (inputstr.startsWith("SyncTime:")) {
+    		inputstr.remove(0, 9);
+    		curr_time = inputstr;
     		oLed128x64.setTextSize(1);
 			oLed128x64.setTextColor(Green);
 			oLed128x64.setCursor(0, 0);
@@ -184,22 +184,35 @@ void bHCoLED_loop()
 			oLed128x64.println(message_str);
 			oLed128x64.display();
 		}		  	
-  		else if(inputstr.startsWith("From")) {
-    		inputstr.remove(1, 4);
-    		val = "Message"
-    		int indx = inputstr.indexOf(val);
-    		from_str = inputstr.substring(1,int_indx-1);
-    		message_str = inputstr.remove(1, indx+6);
+  		else if(inputstr.startsWith("From:")) {
+    		inputstr.remove(0, 5);
+    		//String val[] = "Message:";
+    		//int indx = inputstr.indexOf(val);
+    		//from_str = inputstr.substring(1,indx-1);
+    		//message_str = inputstr.remove(1, indx+6);
     		oLed128x64.setTextSize(1);
 			oLed128x64.setTextColor(White);
 			oLed128x64.setCursor(0, 0);
 			oLed128x64.clearDisplay();
-			oLed128x64.println("\n You have a new notification: \t");
-			oLed128x64.println(from_str);
-			oLed128x64.println(" sent you a message\n");
-			oLed128x64.println(message_str);						
+			//oLed128x64.println("\n You have a new notification: ");
+			oLed128x64.println(inputstr);
+			oLed128x64.println("\nsent you a message\n");
+			//oLed128x64.println(message_str);						
 			oLed128x64.display();
+            delay(1000);
   		}
+        else if(inputstr.startsWith("Message:")){
+            inputstr.remove(0,8);
+           	oLed128x64.setTextSize(1);
+			oLed128x64.setTextColor(White);
+			oLed128x64.setCursor(0, 0);
+			oLed128x64.clearDisplay();
+			oLed128x64.println(inputstr);
+			//oLed128x64.println(message_str);						
+			oLed128x64.display();
+            delay(1000);
+
+        }
   		else{
   			oLed128x64.setTextSize(2);
 			oLed128x64.setTextColor(Red);
