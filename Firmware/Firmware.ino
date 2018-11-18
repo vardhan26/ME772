@@ -23,7 +23,7 @@
 
 // object initialization
 PulseSensor heartpulse;
-#define SSD1306_LCDHEIGHT 64
+//#define SSD1306_LCDHEIGHT 64
 Adafruit_SSD1306 oLed128x64(OLED128X64_PIN_DC, OLED128X64_PIN_RST, OLED128X64_PIN_CS);
 BTHC05 bthc05(BTHC05_PIN_RXD,BTHC05_PIN_TXD);
 
@@ -164,17 +164,17 @@ void bHCoLED_loop()
     if (bthc05.available())
     {
         //Read a complete line from bluetooth terminal
-        inputstr = bthc05.readStringUntil();
+        String inputstr = bthc05.readString();
         if (inputstr.startsWith("SyncTime:")) {
     		inputstr.remove(0, 9);
     		curr_time = inputstr;
     		oLed128x64.setTextSize(1);
-			oLed128x64.setTextColor(Green);
+			oLed128x64.setTextColor(WHITE);
 			oLed128x64.setCursor(0, 0);
 			oLed128x64.clearDisplay();
 			oLed128x64.println("Time :");
 			oLed128x64.println(curr_time);
-			oLed128x64.setTextColor(White);
+			oLed128x64.setTextColor(WHITE);
 			if (message_str.length() == 0)
 				oLed128x64.println("\n NO NEW NOTIFICATIONS");
 			else
@@ -191,7 +191,7 @@ void bHCoLED_loop()
     		//from_str = inputstr.substring(1,indx-1);
     		//message_str = inputstr.remove(1, indx+6);
     		oLed128x64.setTextSize(1);
-			oLed128x64.setTextColor(White);
+			oLed128x64.setTextColor(WHITE);
 			oLed128x64.setCursor(0, 0);
 			oLed128x64.clearDisplay();
 			//oLed128x64.println("\n You have a new notification: ");
@@ -204,7 +204,7 @@ void bHCoLED_loop()
         else if(inputstr.startsWith("Message:")){
             inputstr.remove(0,8);
            	oLed128x64.setTextSize(1);
-			oLed128x64.setTextColor(White);
+			oLed128x64.setTextColor(WHITE);
 			oLed128x64.setCursor(0, 0);
 			oLed128x64.clearDisplay();
 			oLed128x64.println(inputstr);
@@ -215,7 +215,7 @@ void bHCoLED_loop()
         }
   		else{
   			oLed128x64.setTextSize(2);
-			oLed128x64.setTextColor(Red);
+			oLed128x64.setTextColor(WHITE);
 			oLed128x64.setCursor(0, 0);
 			oLed128x64.clearDisplay();
 			oLed128x64.println("THE DEVICE IS IN STAND-BY MODE");
